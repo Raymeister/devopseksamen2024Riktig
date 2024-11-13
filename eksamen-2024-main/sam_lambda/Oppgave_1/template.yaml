@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Oppgave 1
+
+  Sample SAM Template for Oppgave 1
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  ImageGenerationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      CodeUri: hello_world/
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: "pgr301-couch-explorers"
+      Policies:
+        - S3WritePolicy: 
+            BucketName: !Ref S3Bucket
+      Events:
+        HelloWorld:
+          Type: Api  # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /generate-image
+            Method: post
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+
+Outputs:
+  GenerateImageApi:
+    Description: API Gateway endpoint URL for the image generation function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generate-image"
+    
+  ImageGenerationFunction:
+    Description: Image Generation Lambda Function ARN
+    Value: !GetAtt ImageGenerationFunction.Arn
+    
+  ImageGenerationFunctionIamRole:
+    Description: Implicit IAM Role created for Image Generation function
+    Value: !GetAtt ImageGenerationFunctionRole.Arn
