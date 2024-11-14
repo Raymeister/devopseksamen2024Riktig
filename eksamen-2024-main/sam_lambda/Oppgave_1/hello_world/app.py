@@ -48,6 +48,6 @@ def lambda_handler(event, context):
     image_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_image_path}"
     return {
         "statusCode": 200,
-        "body": json.dumps({"image_url": image_url}),
+        "body": image_url,
         "headers": {"Content-Type": "application/json"}
     }
