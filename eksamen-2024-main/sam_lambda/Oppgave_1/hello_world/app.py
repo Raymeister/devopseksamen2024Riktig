@@ -19,7 +19,7 @@ def lambda_handler(event, context):
 
    
     seed = random.randint(0, 2147483647)
-    s3_image_path = f"48/titan_{seed}.png"  
+    s3_image_path = f"generated_images/48/titan_{seed}.png"  
 
 
     native_request = {
