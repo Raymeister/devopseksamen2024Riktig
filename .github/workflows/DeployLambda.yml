@@ -1,0 +1,50 @@
+name: Deploy SAM Application
+
+on:
+  push:
+    branches:
+      - main  # Triggers deployment on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+
+      - name: Install AWS SAM CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+          unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+          sudo ./sam-installation/install
+
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+
+      - name: Build SAM Application
+        run: sam build
+
+
+      - name: Deploy SAM Application
+        env:
+
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name ImageGenerationApp --capabilities CAPABILITY_IAM
