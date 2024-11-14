@@ -13,6 +13,7 @@ bucket_name = os.getenv("S3_BUCKET_NAME")
 model_id = "amazon.titan-image-generator-v1"
 
 def lambda_handler(event, context):
+    
  
     body = json.loads(event['body'])
     prompt = body.get('prompt', 'Default prompt')
@@ -43,7 +44,7 @@ def lambda_handler(event, context):
 
     
     s3_client.put_object(Bucket=bucket_name, Key=s3_image_path, Body=image_data)
-
+    
 
     image_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_image_path}"
     return {
