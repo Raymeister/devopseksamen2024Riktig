@@ -3,4 +3,4 @@ Oppgave 1:
   link action workflow: https://github.com/Raymeister/devopseksamen2024Riktig/actions/runs/11838415544/job/32987485022
 oppgave 2:
   til terraform apply på main push: https://github.com/Raymeister/devopseksamen2024Riktig/actions/runs/11848705087/job/33020700542
-  ikke main branch vellyket action workflow: https://github.com/Raymeister/devopseksamen2024Riktig/actions/runs/11848507239/job/33020157860
+  ikke main branch vellyket action workflow: https://github.com/Raymeister/devopseksamen2024Riktig/actions/runs/11848731483/job/33020772622
