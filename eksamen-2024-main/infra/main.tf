@@ -17,8 +17,8 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-#for commit change
-resource "aws_s3_bucket" "image_storage" {
+
+data "aws_s3_bucket" "image_storage" {
   bucket = "pgr301-couch-explorers"
 }
 
@@ -93,13 +93,12 @@ resource "aws_lambda_function" "image_generator" {
   runtime       = "python3.9"
   timeout       = 30
 
-
   filename         = "lambda_sqs.zip"
   source_code_hash = filebase64sha256("lambda_sqs.zip")
 
   environment {
     variables = {
-      BUCKET_NAME = aws_s3_bucket.image_storage.bucket
+      BUCKET_NAME = data.aws_s3_bucket.image_storage.bucket
     }
   }
 
