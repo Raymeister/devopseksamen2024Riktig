@@ -4,3 +4,4 @@ Oppgave 1:
 oppgave 2:
   til terraform apply på main push: https://github.com/Raymeister/devopseksamen2024Riktig/actions/runs/11848705087/job/33020700542
   ikke main branch vellyket action workflow: https://github.com/Raymeister/devopseksamen2024Riktig/actions/runs/11848731483/job/33020772622
+  sqs url: https://sqs.eu-west-1.amazonaws.com/244530008913/image_generation_queue
