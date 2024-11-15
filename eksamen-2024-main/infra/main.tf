@@ -112,3 +112,34 @@ resource "aws_lambda_event_source_mapping" "sqs_trigger" {
   function_name    = aws_lambda_function.image_generator.arn
   batch_size       = 10
 }
+
+resource "aws_sns_topic" "cloudwatch_alarm_topic" {
+  name = "sqs-delays-alarm-topic"
+}
+
+
+resource "aws_sns_topic_subscription" "alarm_email_subscription" {
+  topic_arn = aws_sns_topic.cloudwatch_alarm_topic.arn
+  protocol  = "email"
+  endpoint  = var.notification_email
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "sqs_oldest_message_alarm" {
+  alarm_name          = "SQS-Oldest-Message-Age-High"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "ApproximateAgeOfOldestMessage"
+  namespace           = "AWS/SQS"
+  period              = 60  
+  statistic           = "Maximum"
+  threshold           = 300  
+
+  dimensions = {
+    QueueName = aws_sqs_queue.image_generation_queue.name
+  }
+
+  alarm_description = "Triggered when the age of the oldest message in the SQS queue exceeds 5 minutes."
+  actions_enabled   = true
+  alarm_actions     = [aws_sns_topic.cloudwatch_alarm_topic.arn]
+}
